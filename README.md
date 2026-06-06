@@ -38,10 +38,10 @@ This project implements the main exam requirements:
 
 ## Test accounts
 
-| Email | Password | Role |
-| --- | --- | --- |
+| Email            | Password | Role                                         |
+| ---------------- | -------- | -------------------------------------------- |
 | manager@test.com | password | Manager (can edit books and view cost price) |
-| staff@test.com | password | Staff (can view books only) |
+| staff@test.com   | password | Staff (can view books only)                  |
 
 ## What I used AI for
 

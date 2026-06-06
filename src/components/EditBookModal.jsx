@@ -52,10 +52,15 @@ export default function EditBookModal({ book, onClose, onUpdated }) {
     { name: "stock", label: "Stock", type: "number" },
   ];
 
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-4"
       style={{ background: "rgba(0,0,0,0.4)" }}
+      onClick={handleOverlayClick}
     >
       <div className="bg-white rounded-xl border border-gray-200 w-full max-w-md p-6">
         {/* Header */}
