@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import client from '../api/client'
 import CostPriceModal from '../components/CostPriceModal'
+import EditBookModal from '../components/EditBookModal'
 
 export default function BooksPage() {
   const { user, hasPermission, logout } = useAuth()
@@ -15,6 +16,13 @@ export default function BooksPage() {
   const canEditBooks = hasPermission('books.update')
 
   const [costPriceBook, setCostPriceBook] = useState(null)
+  const [editBook, setEditBook] = useState(null)
+
+  const handleBookUpdated = (updatedBook) => {
+    setBooks((prev) =>
+        prev.map((b) => (b.id === updatedBook.id ? updatedBook : b))
+    )
+    }
 
   const fetchBooks = async (p = 1) => {
     setLoading(true)
@@ -108,11 +116,14 @@ export default function BooksPage() {
     View cost price
   </button>
 )}
-                        {canEditBooks && (
-                          <button className="text-xs text-gray-600 hover:text-gray-900 border border-gray-200 hover:border-gray-400 px-3 py-1.5 rounded-lg transition-colors">
-                            Edit
-                          </button>
-                        )}
+                       {canEditBooks && (
+  <button
+    onClick={() => setEditBook(book)}
+    className="text-xs text-gray-600 hover:text-gray-900 border border-gray-200 hover:border-gray-400 px-3 py-1.5 rounded-lg transition-colors"
+  >
+    Edit
+  </button>
+)}
                       </div>
                     </td>
                   </tr>
@@ -152,6 +163,13 @@ export default function BooksPage() {
   <CostPriceModal
     book={costPriceBook}
     onClose={() => setCostPriceBook(null)}
+  />
+)}
+{editBook && (
+  <EditBookModal
+    book={editBook}
+    onClose={() => setEditBook(null)}
+    onUpdated={handleBookUpdated}
   />
 )}
     </div>
