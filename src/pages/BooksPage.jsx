@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import client from '../api/client'
+import CostPriceModal from '../components/CostPriceModal'
 
 export default function BooksPage() {
   const { user, hasPermission, logout } = useAuth()
@@ -12,6 +13,8 @@ export default function BooksPage() {
 
   const canViewCostPrice = hasPermission('books.cost_price.view')
   const canEditBooks = hasPermission('books.update')
+
+  const [costPriceBook, setCostPriceBook] = useState(null)
 
   const fetchBooks = async (p = 1) => {
     setLoading(true)
@@ -97,11 +100,14 @@ export default function BooksPage() {
                     <td className="px-4 py-3 text-gray-600">{book.stock}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2 justify-end">
-                        {canViewCostPrice && (
-                          <button className="text-xs text-blue-600 hover:text-blue-700 border border-blue-200 hover:border-blue-400 px-3 py-1.5 rounded-lg transition-colors">
-                            View cost price
-                          </button>
-                        )}
+                       {canViewCostPrice && (
+  <button
+    onClick={() => setCostPriceBook(book)}
+    className="text-xs text-blue-600 hover:text-blue-700 border border-blue-200 hover:border-blue-400 px-3 py-1.5 rounded-lg transition-colors"
+  >
+    View cost price
+  </button>
+)}
                         {canEditBooks && (
                           <button className="text-xs text-gray-600 hover:text-gray-900 border border-gray-200 hover:border-gray-400 px-3 py-1.5 rounded-lg transition-colors">
                             Edit
@@ -142,6 +148,12 @@ export default function BooksPage() {
         )}
 
       </div>
+      {costPriceBook && (
+  <CostPriceModal
+    book={costPriceBook}
+    onClose={() => setCostPriceBook(null)}
+  />
+)}
     </div>
   )
 }
