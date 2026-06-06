@@ -2,7 +2,7 @@
 
 A React + Vite admin UI for an online bookstore, built as a hands-on take-home exam.
 
-Live URL: (add your Vercel URL here)
+Live URL: https://bookstore-admin-xi.vercel.app/login
 
 ---
 
@@ -11,7 +11,6 @@ Live URL: (add your Vercel URL here)
 1. Clone the repo
 
    git clone https://github.com/your-username/bookstore-admin.git
-   cd bookstore-admin
 
 2. Install dependencies
 
