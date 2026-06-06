@@ -2,13 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 
 import client from "../api/client";
-import { useAuth } from "../context/useAuth";
-import EditBookModal from "../components/EditBookModal";
-import CostPriceModal from "../components/CostPriceModal";
-import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
+import { useAuth } from "../context/useAuth";
 import BooksTable from "../components/BooksTable";
 import Pagination from "../components/Pagination";
+import EditBookModal from "../components/EditBookModal";
+import CostPriceModal from "../components/CostPriceModal";
 
 export default function BooksPage() {
   const { user, hasPermission, logout } = useAuth();
@@ -18,6 +18,7 @@ export default function BooksPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const canViewCostPrice = hasPermission("books.cost_price.view");
   const canEditBooks = hasPermission("books.update");
@@ -61,29 +62,50 @@ export default function BooksPage() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchBooks(page);
   }, [page, fetchBooks]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <div className="flex flex-col lg:flex-row flex-1 min-h-0">
-        <Sidebar />
+      <Header
+        user={user}
+        dropdownOpen={dropdownOpen}
+        setDropdownOpen={setDropdownOpen}
+        onLogout={handleLogout}
+        onMenuClick={() => setSidebarOpen((v) => !v)}
+      />
 
-        <main className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
-          <Header
-            user={user}
-            dropdownOpen={dropdownOpen}
-            setDropdownOpen={setDropdownOpen}
-            onLogout={handleLogout}
+      <div className="flex flex-1 min-h-0 relative">
+        {/* Mobile sidebar overlay */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 z-20 bg-black/30 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
           />
+        )}
 
-          <div className="max-w-5xl mx-auto w-full px-4 py-6 sm:px-6 sm:py-8">
+        {/* Sidebar — drawer on mobile, static on desktop */}
+        <div
+          className={`
+            fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200
+            transform transition-transform duration-200 ease-in-out
+            lg:static lg:translate-x-0 lg:z-auto lg:flex-shrink-0
+            ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          `}
+        >
+          <Sidebar onNavigate={() => setSidebarOpen(false)} />
+        </div>
+
+        {/* Main content */}
+        <main className="flex-1 flex flex-col min-w-0 overflow-y-auto overflow-x-hidden">
+          <div className="w-full max-w-5xl mx-auto px-4 py-4 sm:px-6 sm:py-6 lg:py-8">
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-6 flex items-center justify-between">
                 {error}
                 <button
                   onClick={() => fetchBooks(page)}
-                  className="underline ml-4"
+                  className="underline ml-4 shrink-0"
                 >
                   Retry
                 </button>
@@ -101,22 +123,22 @@ export default function BooksPage() {
 
             <Pagination meta={meta} onPageChange={setPage} />
           </div>
-
-          {costPriceBook && (
-            <CostPriceModal
-              book={costPriceBook}
-              onClose={() => setCostPriceBook(null)}
-            />
-          )}
-          {editBook && (
-            <EditBookModal
-              book={editBook}
-              onClose={() => setEditBook(null)}
-              onUpdated={handleBookUpdated}
-            />
-          )}
         </main>
       </div>
+
+      {costPriceBook && (
+        <CostPriceModal
+          book={costPriceBook}
+          onClose={() => setCostPriceBook(null)}
+        />
+      )}
+      {editBook && (
+        <EditBookModal
+          book={editBook}
+          onClose={() => setEditBook(null)}
+          onUpdated={handleBookUpdated}
+        />
+      )}
     </div>
   );
 }

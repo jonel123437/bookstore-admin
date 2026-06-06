@@ -1,79 +1,112 @@
 # Bookstore Admin
 
-A React + Vite admin UI for an online bookstore, built as a hands-on exam project.
+A React + Vite admin UI for managing books online. Features login, book listings with pagination, permission-based access, and form handling.
 
-Live URL: https://bookstore-admin-xi.vercel.app/login
+**Live URL:** https://bookstore-admin-xi.vercel.app/login
 
-## What this app does
+## Quick Start
 
-This project implements the main exam requirements:
+### Setup
 
-- login screen with validation errors
-- paginated books table from the bookstore API
-- permission-based UI for cost price access
-- modal flow for viewing cost price after entering a reason
-- edit-book form with validation feedback
-- logout flow
+```bash
+git clone <repo-url>
+cd jabar
+npm install
+npm run dev
+```
 
-## How to run
+Open http://localhost:5173
 
-1. Clone the repository
-2. Install dependencies
+### Commands
 
-   npm install
+```bash
+npm run dev      # Development server
+npm run build    # Production build
+npm run lint     # Check code
+```
 
-3. Start the development server
+## Features
 
-   npm run dev
+- ✅ Login with validation errors
+- ✅ Paginated books table
+- ✅ Permission-based access (manager vs staff)
+- ✅ View cost price with reason tracking
+- ✅ Edit books with error feedback
+- ✅ Logout
+- ✅ Mobile responsive
+- ✅ Error handling with retry
 
-4. Open http://localhost:5173
+## Test Accounts
 
-## Tech stack
+| Email            | Password | Access          |
+| ---------------- | -------- | --------------- |
+| manager@test.com | password | All features    |
+| staff@test.com   | password | View books only |
 
-- React
-- Vite
-- React Router DOM
-- Axios
+## Tech Stack
+
+- React 18 + Vite
+- React Router DOM v6
+- Axios (API client)
 - Tailwind CSS
+- ESLint
 
-## Test accounts
+## What I Built
 
-| Email            | Password | Role                                         |
-| ---------------- | -------- | -------------------------------------------- |
-| manager@test.com | password | Manager (can edit books and view cost price) |
-| staff@test.com   | password | Staff (can view books only)                  |
+**Components:**
 
-## What I used AI for
+- `LoginPage` - Authentication
+- `BooksPage` - Main page with books list
+- `Header`, `Sidebar` - Layout
+- `BooksTable`, `Pagination` - Books display
+- `EditBookModal`, `CostPriceModal` - Forms
 
-I used AI assistance during development to help with:
+**Features:**
 
-- setting up the React + Vite project structure
-- creating the authentication and Axios client flow
-- generating the main page and modal UI components
-- reviewing and refining the README and project flow
+- Auth context for state management
+- API client with token interceptor
+- Protected routes
+- Form validation (client & server)
+- Responsive design
 
-All key code paths were checked manually against the API behavior and the project was verified with a production build.
+## How I Used AI
 
-## What I would do differently with more time
+I used Claude and ChatGPT to help with:
 
-- extract API calls into separate service modules
-- add toast notifications for success and error feedback
-- add stronger route-level permission checks
-- improve loading skeletons and form validation UX
+- Project setup and structure
+- Authentication flow
+- API integration
+- Component creation and styling
+- Code organization and refactoring
 
-## Decisions I am unsure about
+To give the AI better context, I used the `tree` command to print the project folder structure and pasted it into the chat. This way the AI knew exactly what files existed and where they were located, making it easier to ask for specific instructions, file suggestions, or architectural decisions without confusion.
 
-- whether permissions should be read from the login response only or refreshed via GET /api/me on app load
-- whether book updates should refetch the full list or update the row in place after a successful PUT
+All code was manually tested against API requirements with both test accounts.
+
+## Future Improvements
+
+If I had more time, I would:
+
+1. **Create a Button Component** - Build a reusable button with variants (primary, secondary, danger), loading states, and sizes. Replace all inline button styling across the codebase.
+
+2. **Implement Atomic Design** - Structure components into atoms (Button, Input, Label), molecules (FormField, Card), and organisms (Forms, Tables, Modals). Makes the codebase more organized and scalable.
+
+3. **Build Reusable Hooks** - Create custom hooks for common patterns:
+   - `useForm` - Handle form state, validation, and submission
+   - `useAsync` - Manage loading, error, and data states for API calls
+   - `usePermission` - Simplify permission checks
+   - `useLocalStorage` - Manage persistent state
+
+4. **Additional Ideas**:
+   - Extract API calls into service modules
+   - Add toast notifications
+   - Implement TypeScript
+   - Add unit tests
+   - Create E2E tests with Cypress
 
 ## Notes
 
-- No extra environment variables are required for local development.
-- The API base URL is currently set in src/api/client.js to https://reactdeveloperexam.ymcargo.tech.
-- The Vercel rewrite rule in vercel.json supports direct navigation to client-side routes.
-
-## Verification
-
-This project was verified with:
-
-npm run build
+- No environment variables needed
+- API base URL: https://reactdeveloperexam.ymcargo.tech
+- Token stored in browser localStorage
+- See [TESTING_CHECKLIST.md](TESTING_CHECKLIST.md) for testing guide
