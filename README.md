@@ -1,87 +1,79 @@
 # Bookstore Admin
 
-A React + Vite admin UI for an online bookstore, built as a hands-on take-home exam.
+A React + Vite admin UI for an online bookstore, built as a hands-on exam project.
 
 Live URL: https://bookstore-admin-xi.vercel.app/login
 
----
+## What this app does
+
+This project implements the main exam requirements:
+
+- login screen with validation errors
+- paginated books table from the bookstore API
+- permission-based UI for cost price access
+- modal flow for viewing cost price after entering a reason
+- edit-book form with validation feedback
+- logout flow
 
 ## How to run
 
-1. Clone the repo
-
-   git clone https://github.com/your-username/bookstore-admin.git
-
+1. Clone the repository
 2. Install dependencies
 
    npm install
 
-3. Start the dev server
+3. Start the development server
 
    npm run dev
 
 4. Open http://localhost:5173
 
-No environment variables needed. The API base URL is hardcoded to
-https://reactdeveloperexam.ymcargo.tech.
+## Tech stack
 
----
+- React
+- Vite
+- React Router DOM
+- Axios
+- Tailwind CSS
 
 ## Test accounts
 
-| Email            | Password | Role    |
-| ---------------- | -------- | ------- |
-| manager@test.com | password | Manager |
-| staff@test.com   | password | Staff   |
-
-Manager has full access including cost price and edit.
-Staff can only view the books list — the cost price button is not rendered at all.
-
----
+| Email | Password | Role |
+| --- | --- | --- |
+| manager@test.com | password | Manager (can edit books and view cost price) |
+| staff@test.com | password | Staff (can view books only) |
 
 ## What I used AI for
 
-I used Claude (claude.ai) throughout this project as a coding assistant:
+I used AI assistance during development to help with:
 
-- Scaffolding the initial project structure (folder layout, Vite + Tailwind setup)
-- Generating the axios client with the auth interceptor
-- Building the AuthContext with localStorage persistence
-- Generating the initial JSX for all pages and modals (LoginPage, BooksPage,
-  CostPriceModal, EditBookModal)
-- Writing the README
+- setting up the React + Vite project structure
+- creating the authentication and Axios client flow
+- generating the main page and modal UI components
+- reviewing and refining the README and project flow
 
-All generated code was reviewed, tested, and verified manually against the API
-docs before committing. I tested every feature with both accounts and confirmed
-behavior in the browser DevTools network tab.
-
----
+All key code paths were checked manually against the API behavior and the project was verified with a production build.
 
 ## What I would do differently with more time
 
-- **Extract an `api/books.js` module** — right now API calls are inline inside
-  components. I would move them into a dedicated file for cleaner separation.
-- **Add a toast notification system** — success and error feedback currently
-  relies on inline messages. A toast would feel more polished.
-- **Add a ProtectedRoute per permission** — right now the edit button just
-  doesn't show for staff, but there's no route-level guard. A proper guard
-  would return 403 if someone navigates directly.
-- **Loading skeletons** — the spinner works but skeleton rows would feel more
-  professional on the books table.
-- **Form validation before hitting the API** — the edit form currently relies
-  on the API for 422 errors. Client-side validation would give faster feedback.
-
----
+- extract API calls into separate service modules
+- add toast notifications for success and error feedback
+- add stronger route-level permission checks
+- improve loading skeletons and form validation UX
 
 ## Decisions I am unsure about
 
-- **Storing permissions from the login response vs calling GET /api/me** — I
-  chose to read permissions from the login response and store them in
-  localStorage. This avoids an extra network call on every page load but means
-  permissions could be stale if they change server-side without a re-login. A
-  more robust approach would be to call GET /api/me on app load to always get
-  fresh permissions.
+- whether permissions should be read from the login response only or refreshed via GET /api/me on app load
+- whether book updates should refetch the full list or update the row in place after a successful PUT
 
-- **Updating the table row in-place after edit** — after a successful PUT I
-  replace the book in local state instead of refetching the whole page. This is
-  faster but if the server transforms any data unexpectedly the UI could be
-  out of sync. A refetch would be safer.
+## Notes
+
+- No extra environment variables are required for local development.
+- The API base URL is currently set in src/api/client.js to https://reactdeveloperexam.ymcargo.tech.
+- The Vercel rewrite rule in vercel.json supports direct navigation to client-side routes.
+
+## Verification
+
+This project was verified with:
+
+npm run build
