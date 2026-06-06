@@ -10,7 +10,6 @@ A React + Vite admin UI for managing books online. Features login, book listings
 
 ```bash
 git clone <repo-url>
-cd jabar
 npm install
 npm run dev
 ```
