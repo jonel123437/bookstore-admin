@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useEffect, useState, useCallback } from "react";
+import { useAuth } from "../context/useAuth";
 import client from "../api/client";
 import CostPriceModal from "../components/CostPriceModal";
 import EditBookModal from "../components/EditBookModal";
@@ -24,7 +24,7 @@ export default function BooksPage() {
   const handleLogout = async () => {
     try {
       await client.post("/api/logout");
-    } catch (err) {
+    } catch {
       // silently ignore — we still want to clear local session
     } finally {
       logout();
@@ -38,7 +38,7 @@ export default function BooksPage() {
     );
   };
 
-  const fetchBooks = async (p = 1) => {
+  const fetchBooks = useCallback(async (p = 1) => {
     setLoading(true);
     setError("");
     try {
@@ -47,16 +47,16 @@ export default function BooksPage() {
       });
       setBooks(res.data.data);
       setMeta(res.data.meta);
-    } catch (err) {
+    } catch {
       setError("Failed to load books. Please try again.");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchBooks(page);
-  }, [page]);
+    fetchBooks(page); // eslint-disable-line react-hooks/set-state-in-effect
+  }, [page, fetchBooks]);
 
   return (
     <div className="min-h-screen bg-gray-50">
