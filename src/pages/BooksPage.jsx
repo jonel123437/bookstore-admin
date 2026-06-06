@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import client from '../api/client'
 import CostPriceModal from '../components/CostPriceModal'
 import EditBookModal from '../components/EditBookModal'
+import { useNavigate } from 'react-router-dom'
 
 export default function BooksPage() {
   const { user, hasPermission, logout } = useAuth()
@@ -17,6 +18,19 @@ export default function BooksPage() {
 
   const [costPriceBook, setCostPriceBook] = useState(null)
   const [editBook, setEditBook] = useState(null)
+
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+  try {
+    await client.post('/api/logout')
+  } catch (err) {
+    // silently ignore — we still want to clear local session
+  } finally {
+    logout()
+    navigate('/login')
+  }
+}
 
   const handleBookUpdated = (updatedBook) => {
     setBooks((prev) =>
@@ -52,11 +66,11 @@ export default function BooksPage() {
           <p className="text-sm text-gray-500">Logged in as {user?.name}</p>
         </div>
         <button
-          onClick={logout}
-          className="text-sm text-gray-500 hover:text-red-600 border border-gray-200 hover:border-red-300 px-3 py-1.5 rounded-lg transition-colors"
-        >
-          Sign out
-        </button>
+  onClick={handleLogout}
+  className="text-sm text-gray-500 hover:text-red-600 border border-gray-200 hover:border-red-300 px-3 py-1.5 rounded-lg transition-colors"
+>
+  Sign out
+</button>
       </div>
 
       <div className="max-w-5xl mx-auto px-6 py-8">
