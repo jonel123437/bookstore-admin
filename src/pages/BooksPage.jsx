@@ -1,64 +1,65 @@
-import { useEffect, useState } from 'react'
-import { useAuth } from '../context/AuthContext'
-import client from '../api/client'
-import CostPriceModal from '../components/CostPriceModal'
-import EditBookModal from '../components/EditBookModal'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import client from "../api/client";
+import CostPriceModal from "../components/CostPriceModal";
+import EditBookModal from "../components/EditBookModal";
+import { useNavigate } from "react-router-dom";
 
 export default function BooksPage() {
-  const { user, hasPermission, logout } = useAuth()
-  const [books, setBooks] = useState([])
-  const [meta, setMeta] = useState(null)
-  const [page, setPage] = useState(1)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const { user, hasPermission, logout } = useAuth();
+  const [books, setBooks] = useState([]);
+  const [meta, setMeta] = useState(null);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const canViewCostPrice = hasPermission('books.cost_price.view')
-  const canEditBooks = hasPermission('books.update')
+  const canViewCostPrice = hasPermission("books.cost_price.view");
+  const canEditBooks = hasPermission("books.update");
 
-  const [costPriceBook, setCostPriceBook] = useState(null)
-  const [editBook, setEditBook] = useState(null)
+  const [costPriceBook, setCostPriceBook] = useState(null);
+  const [editBook, setEditBook] = useState(null);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
-  try {
-    await client.post('/api/logout')
-  } catch (err) {
-    // silently ignore — we still want to clear local session
-  } finally {
-    logout()
-    navigate('/login')
-  }
-}
+    try {
+      await client.post("/api/logout");
+    } catch (err) {
+      // silently ignore — we still want to clear local session
+    } finally {
+      logout();
+      navigate("/login");
+    }
+  };
 
   const handleBookUpdated = (updatedBook) => {
     setBooks((prev) =>
-        prev.map((b) => (b.id === updatedBook.id ? updatedBook : b))
-    )
-    }
+      prev.map((b) => (b.id === updatedBook.id ? updatedBook : b)),
+    );
+  };
 
   const fetchBooks = async (p = 1) => {
-    setLoading(true)
-    setError('')
+    setLoading(true);
+    setError("");
     try {
-      const res = await client.get('/api/books', { params: { page: p, per_page: 15 } })
-      setBooks(res.data.data)
-      setMeta(res.data.meta)
+      const res = await client.get("/api/books", {
+        params: { page: p, per_page: 15 },
+      });
+      setBooks(res.data.data);
+      setMeta(res.data.meta);
     } catch (err) {
-      setError('Failed to load books. Please try again.')
+      setError("Failed to load books. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchBooks(page)
-  }, [page])
+    fetchBooks(page);
+  }, [page]);
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <div>
@@ -66,20 +67,21 @@ export default function BooksPage() {
           <p className="text-sm text-gray-500">Logged in as {user?.name}</p>
         </div>
         <button
-  onClick={handleLogout}
-  className="text-sm text-gray-500 hover:text-red-600 border border-gray-200 hover:border-red-300 px-3 py-1.5 rounded-lg transition-colors"
->
-  Sign out
-</button>
+          onClick={handleLogout}
+          className="text-sm text-gray-500 hover:text-red-600 border border-gray-200 hover:border-red-300 px-3 py-1.5 rounded-lg transition-colors"
+        >
+          Sign out
+        </button>
       </div>
 
       <div className="max-w-5xl mx-auto px-6 py-8">
-
         {/* Error state */}
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-6 flex items-center justify-between">
             {error}
-            <button onClick={() => fetchBooks(page)} className="underline ml-4">Retry</button>
+            <button onClick={() => fetchBooks(page)} className="underline ml-4">
+              Retry
+            </button>
           </div>
         )}
 
@@ -88,10 +90,18 @@ export default function BooksPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wide px-4 py-3">Title</th>
-                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wide px-4 py-3">Author</th>
-                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wide px-4 py-3">Retail Price</th>
-                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wide px-4 py-3">Stock</th>
+                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wide px-4 py-3">
+                  Title
+                </th>
+                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wide px-4 py-3">
+                  Author
+                </th>
+                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wide px-4 py-3">
+                  Retail Price
+                </th>
+                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wide px-4 py-3">
+                  Stock
+                </th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
@@ -107,14 +117,22 @@ export default function BooksPage() {
                 </tr>
               ) : books.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center text-gray-400 py-16 text-sm">
+                  <td
+                    colSpan={5}
+                    className="text-center text-gray-400 py-16 text-sm"
+                  >
                     No books found.
                   </td>
                 </tr>
               ) : (
                 books.map((book) => (
-                  <tr key={book.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-gray-900">{book.title}</td>
+                  <tr
+                    key={book.id}
+                    className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-4 py-3 font-medium text-gray-900">
+                      {book.title}
+                    </td>
                     <td className="px-4 py-3 text-gray-600">{book.author}</td>
                     <td className="px-4 py-3 text-gray-600">
                       {book.currency} {parseFloat(book.retail_price).toFixed(2)}
@@ -122,22 +140,22 @@ export default function BooksPage() {
                     <td className="px-4 py-3 text-gray-600">{book.stock}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2 justify-end">
-                       {canViewCostPrice && (
-  <button
-    onClick={() => setCostPriceBook(book)}
-    className="text-xs text-blue-600 hover:text-blue-700 border border-blue-200 hover:border-blue-400 px-3 py-1.5 rounded-lg transition-colors"
-  >
-    View cost price
-  </button>
-)}
-                       {canEditBooks && (
-  <button
-    onClick={() => setEditBook(book)}
-    className="text-xs text-gray-600 hover:text-gray-900 border border-gray-200 hover:border-gray-400 px-3 py-1.5 rounded-lg transition-colors"
-  >
-    Edit
-  </button>
-)}
+                        {canViewCostPrice && (
+                          <button
+                            onClick={() => setCostPriceBook(book)}
+                            className="text-xs text-blue-600 hover:text-blue-700 border border-blue-200 hover:border-blue-400 px-3 py-1.5 rounded-lg transition-colors"
+                          >
+                            View cost price
+                          </button>
+                        )}
+                        {canEditBooks && (
+                          <button
+                            onClick={() => setEditBook(book)}
+                            className="text-xs text-gray-600 hover:text-gray-900 border border-gray-200 hover:border-gray-400 px-3 py-1.5 rounded-lg transition-colors"
+                          >
+                            Edit
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -171,21 +189,20 @@ export default function BooksPage() {
             </div>
           </div>
         )}
-
       </div>
       {costPriceBook && (
-  <CostPriceModal
-    book={costPriceBook}
-    onClose={() => setCostPriceBook(null)}
-  />
-)}
-{editBook && (
-  <EditBookModal
-    book={editBook}
-    onClose={() => setEditBook(null)}
-    onUpdated={handleBookUpdated}
-  />
-)}
+        <CostPriceModal
+          book={costPriceBook}
+          onClose={() => setCostPriceBook(null)}
+        />
+      )}
+      {editBook && (
+        <EditBookModal
+          book={editBook}
+          onClose={() => setEditBook(null)}
+          onUpdated={handleBookUpdated}
+        />
+      )}
     </div>
-  )
+  );
 }

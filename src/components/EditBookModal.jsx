@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import client from '../api/client'
+import { useState } from "react";
+import client from "../api/client";
 
 export default function EditBookModal({ book, onClose, onUpdated }) {
   const [form, setForm] = useState({
@@ -7,21 +7,21 @@ export default function EditBookModal({ book, onClose, onUpdated }) {
     author: book.author,
     retail_price: book.retail_price,
     stock: book.stock,
-  })
-  const [errors, setErrors] = useState({})
-  const [loading, setLoading] = useState(false)
-  const [generalError, setGeneralError] = useState('')
+  });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [generalError, setGeneralError] = useState("");
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-    setErrors({ ...errors, [e.target.name]: undefined })
-  }
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: undefined });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setErrors({})
-    setGeneralError('')
-    setLoading(true)
+    e.preventDefault();
+    setErrors({});
+    setGeneralError("");
+    setLoading(true);
 
     try {
       const res = await client.put(`/api/books/${book.id}`, {
@@ -29,36 +29,35 @@ export default function EditBookModal({ book, onClose, onUpdated }) {
         author: form.author,
         retail_price: parseFloat(form.retail_price),
         stock: parseInt(form.stock),
-      })
-      onUpdated(res.data.data)
-      onClose()
+      });
+      onUpdated(res.data.data);
+      onClose();
     } catch (err) {
       if (err.response?.status === 422) {
-        setErrors(err.response.data.errors ?? {})
+        setErrors(err.response.data.errors ?? {});
       } else if (err.response?.status === 403) {
-        setGeneralError('You do not have permission to edit books.')
+        setGeneralError("You do not have permission to edit books.");
       } else {
-        setGeneralError('Something went wrong. Please try again.')
+        setGeneralError("Something went wrong. Please try again.");
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const fields = [
-    { name: 'title', label: 'Title', type: 'text' },
-    { name: 'author', label: 'Author', type: 'text' },
-    { name: 'retail_price', label: 'Retail price', type: 'number' },
-    { name: 'stock', label: 'Stock', type: 'number' },
-  ]
+    { name: "title", label: "Title", type: "text" },
+    { name: "author", label: "Author", type: "text" },
+    { name: "retail_price", label: "Retail price", type: "number" },
+    { name: "stock", label: "Stock", type: "number" },
+  ];
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-4"
-      style={{ background: 'rgba(0,0,0,0.4)' }}
+      style={{ background: "rgba(0,0,0,0.4)" }}
     >
       <div className="bg-white rounded-xl border border-gray-200 w-full max-w-md p-6">
-
         {/* Header */}
         <div className="flex items-start justify-between mb-5">
           <div>
@@ -91,9 +90,9 @@ export default function EditBookModal({ book, onClose, onUpdated }) {
                 value={form[name]}
                 onChange={handleChange}
                 disabled={loading}
-                min={type === 'number' ? 0 : undefined}
+                min={type === "number" ? 0 : undefined}
                 className={`w-full px-3 py-2 text-sm border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors[name] ? 'border-red-400 bg-red-50' : 'border-gray-300'
+                  errors[name] ? "border-red-400 bg-red-50" : "border-gray-300"
                 }`}
               />
               {errors[name] && (
@@ -116,12 +115,11 @@ export default function EditBookModal({ book, onClose, onUpdated }) {
               disabled={loading}
               className="text-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-colors"
             >
-              {loading ? 'Saving...' : 'Save changes'}
+              {loading ? "Saving..." : "Save changes"}
             </button>
           </div>
         </form>
-
       </div>
     </div>
-  )
+  );
 }

@@ -1,47 +1,52 @@
-import { useState } from 'react'
-import client from '../api/client'
+import { useState } from "react";
+import client from "../api/client";
 
 export default function CostPriceModal({ book, onClose }) {
-  const [reason, setReason] = useState('')
-  const [fieldError, setFieldError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [costPrice, setCostPrice] = useState(null)
+  const [reason, setReason] = useState("");
+  const [fieldError, setFieldError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [costPrice, setCostPrice] = useState(null);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setFieldError('')
+    e.preventDefault();
+    setFieldError("");
 
     if (reason.trim().length < 5) {
-      setFieldError('Reason must be at least 5 characters.')
-      return
+      setFieldError("Reason must be at least 5 characters.");
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     try {
-      const res = await client.post(`/api/books/${book.id}/cost-price`, { reason })
-      setCostPrice(res.data.data)
+      const res = await client.post(`/api/books/${book.id}/cost-price`, {
+        reason,
+      });
+      setCostPrice(res.data.data);
     } catch (err) {
       if (err.response?.status === 422) {
-        setFieldError(err.response.data.errors?.reason?.[0] ?? 'Invalid reason.')
+        setFieldError(
+          err.response.data.errors?.reason?.[0] ?? "Invalid reason.",
+        );
       } else {
-        setFieldError('Something went wrong. Please try again.')
+        setFieldError("Something went wrong. Please try again.");
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-4"
-      style={{ background: 'rgba(0,0,0,0.4)' }}
+      style={{ background: "rgba(0,0,0,0.4)" }}
     >
       <div className="bg-white rounded-xl border border-gray-200 w-full max-w-md p-6">
-
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h2 className="text-base font-medium text-gray-900">View cost price</h2>
+            <h2 className="text-base font-medium text-gray-900">
+              View cost price
+            </h2>
             <p className="text-sm text-gray-500 mt-0.5">{book.title}</p>
           </div>
           <button
@@ -79,7 +84,7 @@ export default function CostPriceModal({ book, onClose }) {
                 placeholder="e.g. Auditing margin for Q3 review"
                 disabled={loading}
                 className={`w-full px-3 py-2 text-sm border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none ${
-                  fieldError ? 'border-red-400 bg-red-50' : 'border-gray-300'
+                  fieldError ? "border-red-400 bg-red-50" : "border-gray-300"
                 }`}
               />
               {fieldError && (
@@ -102,13 +107,12 @@ export default function CostPriceModal({ book, onClose }) {
                 disabled={loading}
                 className="text-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-colors"
               >
-                {loading ? 'Fetching...' : 'Submit'}
+                {loading ? "Fetching..." : "Submit"}
               </button>
             </div>
           </form>
         )}
-
       </div>
     </div>
-  )
+  );
 }
