@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/useAuth";
+
 import client from "../api/client";
+import { useAuth } from "../context/useAuth";
 
 export default function LoginPage() {
   const navigate = useNavigate();
